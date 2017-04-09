@@ -1,5 +1,6 @@
 var PIXI = require('pixi.js');
 var assets = require('./loadAssets.js');
+//import Main from './index.jsx'
 //import loadAssets from './loadAssets.js'
 
 var Engine = (function(global) {
@@ -25,6 +26,8 @@ var Engine = (function(global) {
 		    cow.anchor.y = 0.5;
 		    
 		    stage.addChild(cow);
+		    renderApp();
+		    renderAwesome();
 		    animate();
 		}
 

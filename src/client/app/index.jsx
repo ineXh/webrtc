@@ -26,6 +26,6 @@ window.renderApp = function(element) {
 window.renderAwesome = function(element) {
   render(<AwesomeComponent/>, document.getElementById('app2'));
 }
-renderApp();
-renderAwesome();
+//renderApp();
+//renderAwesome();
 //render(<AwesomeComponent />, document.getElementById('app2'));

@@ -18,9 +18,20 @@ var config = {
         loader : 'babel-loader'
       }
     ]
-  }
+  },
+  debug: true,
+  devtool: "#eval-source-map",
+  plugins: [
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false,
+            },
+            output: {
+                comments: false,
+            },
+        }),
+    ]
 };
 
 module.exports = config;
 
-// ./node_modules/.bin/webpack -d --watch
