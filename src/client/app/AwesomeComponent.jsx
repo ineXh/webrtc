@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 class AwesomeComponent extends React.Component {
 
   constructor(props) {
@@ -14,6 +15,7 @@ class AwesomeComponent extends React.Component {
   }
   onX () {
     console.log('onX')
+    
   }
 
   render() {
