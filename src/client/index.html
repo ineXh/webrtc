@@ -4,8 +4,47 @@
     <title>React.js using NPM, Babel6 and Webpack</title>
   </head>
   <body>
+    <!--<script src="//cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.10/p5.js"></script>-->
     <div id="app"></div>
-    <div id="app2"></div>    
+    <div id="app2"></div>
     <script src="public/bundle.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.10/p5.js"></script>
+     <script src="app/sketch.js"></script>
+
+     <script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
+	<script src="https://cdn.webrtc-experiment.com/RecordRTC/Whammy.js"></script>
+	<script src="https://cdn.webrtc-experiment.com/RecordRTC/CanvasRecorder.js"></script>
+
+	<button type="button" id="buttonRecord">Record</button>
+	<button type="button" id="buttonStopRecord">Stop Record</button>
+	<!--<canvas></canvas>-->
+	<script>
+
+		var recorder = null;
+		document.getElementById("buttonRecord").onclick = function(){
+			var canvas = document.getElementById("canvas1");
+			recorder = RecordRTC(canvas, {
+	            type: 'canvas'
+	        });
+	        recorder.startRecording();
+		}
+
+		document.getElementById("buttonStopRecord").onclick = function(){
+			recorder.stopRecording(function() {
+                var blob = recorder.getBlob();
+                //document.body.innerHTML = '<video controls src="' + URL.createObjectURL(blob) + '" autoplay loop></video>';
+                videoElement = document.createElement("video");
+                videoElement.setAttribute("id", "canvas1Video"); 
+                videoElement.src = URL.createObjectURL(blob);
+				videoElement.autoPlay = true;
+				videoElement.controls = true;
+				document.body.appendChild(videoElement);
+            });
+		}
+
+
+
+	</script>
+
   </body>
 </html>

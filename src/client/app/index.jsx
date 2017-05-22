@@ -3,7 +3,8 @@ import {render} from 'react-dom';
 import AwesomeComponent from './AwesomeComponent.jsx';
 import Main from './Main.js'
 
-console.log('Hello World!');
+
+//console.log('Hello World!');
 
 class App extends React.Component {
   render () {
@@ -23,8 +24,8 @@ window.renderEmpty = function(element) {
 window.renderApp = function(element) {
   render(<App/>, document.getElementById('app'));
 }
-window.renderAwesome = function(element) {
-  render(<AwesomeComponent/>, document.getElementById('app2'));
+window.renderAwesome = function(input) {
+  render(<AwesomeComponent input={input}/>, document.getElementById('app2'));
 }
 //renderApp();
 //renderAwesome();
