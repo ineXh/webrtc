@@ -20,7 +20,7 @@ var config = {
     ]
   },
   /*debug: true,
-  devtool: "#eval-source-map",*/
+  devtool: "#eval-source-map",
   plugins: [
         new webpack.optimize.UglifyJsPlugin({
             compress: {
@@ -30,7 +30,7 @@ var config = {
                 comments: false,
             },
         }),
-    ]
+    ]*/
 };
 
 module.exports = config;

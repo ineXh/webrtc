@@ -3,7 +3,7 @@ var PIXI = require('pixi.js');
 var loadAssets = function(cb){
 	//console.log(cb)
 	PIXI.loader
-		.add('cow', 'assets/cow.png')
+		.add('cow', 'src/client/assets/cow.png')
 		.load(cb.bind(this));
 } // end loadAssets
 var loadTextures = function(){

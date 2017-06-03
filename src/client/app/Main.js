@@ -10,11 +10,11 @@ var Engine = (function(global) {
     document.addEventListener('DOMContentLoaded', function() {
     	//console.log('DomContentLoaded')
     	//debugger;
-    	window.scrollTo(0,1);
-    	document.body.style.overflow = 'hidden';
+    	//window.scrollTo(0,1);
+    	//document.body.style.overflow = 'hidden';
 
 
-    	var app = new PIXI.Application(300, 300,
+    	var app = new PIXI.Application(640, 640,
         {backgroundColor : 0x59b4ff, //,
          transparent : false, antialias: true});
     	var worldRenderer = app.renderer;
@@ -33,6 +33,7 @@ var Engine = (function(global) {
 
 		    cow.x = worldRenderer.width / 2;
 		    cow.y = worldRenderer.height / 2;
+		    cow.dx = 0;
 		    cow.anchor.x = 0.5;
 		    cow.anchor.y = 0.5;
 
@@ -46,16 +47,19 @@ var Engine = (function(global) {
 			console.log('on X from Main.js')
 		}
 		var onXPlus = function(){
-			cow.x += 5;
+			//cow.x += 5;
+			cow.dx = 5;
 		}
 		var onXMinus = function(){
-			cow.x -= 5;
+			//cow.x -= 5;
+			cow.dx = -5;
 		}
 
 		//new loadAssets(initialize);
 		assets.loadAssets(initialize);
 		var update = function(){
 	        //updateQueue.update();
+	        if(cow) cow.x += cow.dx;
 	    }
 		function animate() {
             requestAnimationFrame(animate);

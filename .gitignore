@@ -1,6 +1,7 @@
 ~*.*
 *.tmp
 node_modules/*
+src/client/public/bundle.js
 *.log
 *.xlsx
 *.class
