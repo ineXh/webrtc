@@ -10,7 +10,7 @@
     <script src="dist/bundle.js" type="text/javascript"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.10/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.10/addons/p5.dom.min.js"></script>
-     <script src="src/client/app/sketch.js"></script>
+     <script src="src/client/app/sketch2.js"></script>
 
      <script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
 	<script src="https://cdn.webrtc-experiment.com/RecordRTC/Whammy.js"></script>
@@ -32,8 +32,8 @@
 		var recorder = null;
 		var blob = null;
 		document.getElementById("buttonRecord").onclick = function(){
-			var canvas = document.getElementById("canvas1");
-			//var canvas = document.getElementById("defaultCanvas0");
+			//var canvas = document.getElementById("canvas1");
+			var canvas = document.getElementById("defaultCanvas0");
 			recorder = RecordRTC(canvas, {
 	            type: 'canvas'
 	        });
@@ -59,7 +59,7 @@
 				videoElement.controls = true;
 				videoElement.loop = true;
 				document.body.appendChild(videoElement);
-				playNewVideo(blob);
+				//playNewVideo(blob); //sketch.js
 
 				convertStreams(blob);
 
