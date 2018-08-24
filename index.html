@@ -34,9 +34,11 @@
 		document.getElementById("buttonRecord").onclick = function(){
 			//var canvas = document.getElementById("canvas1");
 			var canvas = document.getElementById("defaultCanvas0");
+            
 			recorder = RecordRTC(canvas, {
 	            type: 'canvas'
 	        });
+
 	        recorder.startRecording();
 	        document.getElementById("buttonRecord").innerText = "Recording"
 	        document.getElementById("buttonRecord").disabled = true

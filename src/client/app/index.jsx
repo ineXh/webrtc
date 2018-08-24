@@ -5,12 +5,12 @@ import Main from './Main.js'
 
 
 //console.log('Hello World!');
-
 class App extends React.Component {
   render () {
-    return( <div>
-    	<p> Hello React! Hey!</p>;
-    </div>
+    return(
+	    <div>
+	    	<p> Hello React! Hey! Testing 123</p>;
+	    </div>
   );}
 }
 

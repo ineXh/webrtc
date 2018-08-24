@@ -1,0 +1,203 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>React.js using NPM, Babel6 and Webpack</title>
+  </head>
+  <body>
+    <!--<script src="//cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.10/p5.js"></script>-->
+    <div id="app"></div>
+    <div id="app2"></div>
+    <script src="dist/bundle.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.10/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.10/addons/p5.dom.min.js"></script>
+    <script src="src/client/app/lib/p5.sound.js"></script>
+     <script src="src/client/app/sketch3.js"></script>
+
+     <script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
+	<script src="https://cdn.webrtc-experiment.com/RecordRTC/Whammy.js"></script>
+	<script src="https://cdn.webrtc-experiment.com/RecordRTC/CanvasRecorder.js"></script>
+    <script src="https://cdn.webrtc-experiment.com/gif-recorder.js"></script>
+
+    <script src="src/client/app/BufferLoader.js"></script>
+    <script src="src/client/app/loadBuffers.js"></script>
+    <script src="src/client/app/RhythmSample.js"></script>
+
+	<div class="inner">
+        <h4>Inner Division</h4>
+
+    </div>
+
+	<button type="button" id="buttonRecord">Record</button>
+	<button type="button" id="buttonStopRecord" disabled>Stop Record</button>
+
+
+	<script>
+	var inner = document.querySelector('.inner');
+		var videoFile = !!navigator.mozGetUserMedia ? 'video.gif' : 'video.webm';
+		var worker;
+		var recorder = null;
+        var audioRecorder = null;
+
+
+		var blob = null;
+		document.getElementById("buttonRecord").onclick = function(){
+			//var canvas = document.getElementById("canvas1");
+			var canvas = document.getElementById("defaultCanvas0");
+            var options = {
+                 type: 'canvas',
+              mimeType: 'video/webm', // or video/webm\;codecs=h264 or video/webm\;codecs=vp9
+              audioBitsPerSecond: 128000,
+              videoBitsPerSecond: 128000,
+              bitsPerSecond: 128000 // if this line is provided, skip above two
+            };
+			recorder = RecordRTC(canvas, options);
+	        recorder.startRecording();
+
+            var destination = audioContext.createMediaStreamDestination();
+            //destination = audioContext.destination;
+            var stream = destination.stream;
+            audioRecorder = RecordRTC(stream, {
+              recorderType: StereoAudioRecorder
+            })
+            audioRecorder.startRecording();
+            //soundRecord()
+            RhythmSample.play()
+
+	        document.getElementById("buttonRecord").innerText = "Recording"
+	        document.getElementById("buttonRecord").disabled = true
+            document.getElementById("buttonStopRecord").disabled = false
+		}
+
+		document.getElementById("buttonStopRecord").onclick = function(){
+			recorder.stopRecording(function(audioVideoWebMURL) {
+				document.getElementById("buttonRecord").innerText = "Record"
+				document.getElementById("buttonRecord").disabled = false
+                document.getElementById("buttonStopRecord").disabled = true
+                blob = recorder.getBlob();
+                videoElement = document.createElement("video");
+                videoElement.setAttribute("id", "canvas1Video");
+                videoElement.src = URL.createObjectURL(blob);
+                videoElement.download = videoFile;
+                videoElement.autoPlay = true;
+                videoElement.controls = true;
+                videoElement.loop = true;
+                document.body.appendChild(videoElement);
+
+                //soundStopRecord()
+                //soundPlay()
+            }); // end recorder stopRecoding
+
+            audioRecorder.stopRecording(function(audioURL) {
+                var audio = new Audio();
+                audio.controls = true;
+                audio.src = URL.createObjectURL(audioRecorder.blob);
+                document.body.appendChild(audio);
+                audio.play();
+                /*var recordedBlob = audioRecorder.getBlob();
+                audioRecorder.getDataURL(function(dataURL) {
+                    audioElement = document.createElement("AUDIO");
+                    //audioElement.setAttribute("src",dataURL);
+                    audioElement.src = audioURL;
+
+                    audioElement.setAttribute("controls", "controls");
+                    document.body.appendChild(audioElement);
+                });*/
+            });
+
+		} // end buttonStopRecord onClick
+		var workerPath = 'https://archive.org/download/ffmpeg_asm/ffmpeg_asm.js';
+				if(document.domain == 'localhost') {
+					//workerPath = 'src/client/ffmpeg_asm.js'
+                    workerPath = location.href.replace(location.href.split('/').pop(), '') + 'src/client/ffmpeg_asm.js';
+                    //debugger;
+					console.log('workerPath: ' + workerPath)
+		}
+        function processInWebWorker() {
+            var blob = URL.createObjectURL(new Blob(['importScripts("' + workerPath + '");var now = Date.now;function print(text) {postMessage({"type" : "stdout","data" : text});};onmessage = function(event) {var message = event.data;if (message.type === "command") {var Module = {print: print,printErr: print,files: message.files || [],arguments: message.arguments || [],TOTAL_MEMORY: message.TOTAL_MEMORY || false};postMessage({"type" : "start","data" : Module.arguments.join(" ")});postMessage({"type" : "stdout","data" : "Received command: " +Module.arguments.join(" ") +((Module.TOTAL_MEMORY) ? ".  Processing with " + Module.TOTAL_MEMORY + " bits." : "")});var time = now();var result = ffmpeg_run(Module);var totalTime = now() - time;postMessage({"type" : "stdout","data" : "Finished processing (took " + totalTime + "ms)"});postMessage({"type" : "done","data" : result,"time" : totalTime});}};postMessage({"type" : "ready"});'], {
+                type: 'application/javascript'
+            }));
+            var worker = new Worker(blob);
+            URL.revokeObjectURL(blob);
+            return worker;
+        }
+		function convertStreams(videoBlob) {
+            var aab;
+            var buffersReady;
+            var workerReady;
+            var posted;
+            var fileReader = new FileReader();
+            fileReader.onload = function() {
+                aab = this.result;
+                postMessage();
+            };
+            fileReader.readAsArrayBuffer(videoBlob);
+            if (!worker) {
+                worker = processInWebWorker();
+            }
+            worker.onmessage = function(event) {
+                var message = event.data;
+                if (message.type == "ready") {
+                    log('<a href="'+ workerPath +'" download="ffmpeg-asm.js">ffmpeg-asm.js</a> file has been loaded.');
+                    workerReady = true;
+                    if (buffersReady)
+                        postMessage();
+                } else if (message.type == "stdout") {
+                    log(message.data);
+                } else if (message.type == "start") {
+                    log('<a href="'+ workerPath +'" download="ffmpeg-asm.js">ffmpeg-asm.js</a> file received ffmpeg command.');
+                } else if (message.type == "done") {
+                    log(JSON.stringify(message));
+                    var result = message.data[0];
+                    log(JSON.stringify(result));
+                    var blob = new Blob([result.data], {
+                        type: 'video/mp4'
+                    });
+                    log(JSON.stringify(blob));
+                    PostBlob(blob);
+                }
+            } // end onmessage
+            var postMessage = function() {
+                        posted = true;
+                        worker.postMessage({
+                            type: 'command',
+                            arguments: [
+                                '-i', videoFile,
+                                '-c:v', 'mpeg4',
+                                '-b:v', '6400k',
+                                '-strict', 'experimental', 'output.mp4'
+                            ],
+                            files: [
+                                {
+                                    data: new Uint8Array(aab),
+                                    name: videoFile
+                                }
+                            ]
+                        });
+            }; // end postMessage
+        }; // end convertStreams
+
+        function PostBlob(blob) {
+            var video = document.createElement('video');
+            video.setAttribute("id", "mp4Video");
+            //document.getElementById("mp4Video")
+            video.controls = true;
+            var source = document.createElement('source');
+            source.src = URL.createObjectURL(blob);
+            source.type = 'video/mp4; codecs=mpeg4';
+            video.appendChild(source);
+            video.download = 'Play mp4 in VLC Player.mp4';
+            inner.appendChild(document.createElement('hr'));
+            var h2 = document.createElement('h2');
+            h2.innerHTML = '<a href="' + source.src + '" target="_blank" download="Play mp4 in VLC Player.mp4" style="font-size:200%;color:red;">Download Converted mp4 and play in VLC player!</a>';
+            inner.appendChild(h2);
+            h2.style.display = 'block';
+            inner.appendChild(video);
+            video.tabIndex = 0;
+            video.focus();
+            video.play();
+        } // end PostBlob
+
+	</script>
+
+  </body>
+</html>

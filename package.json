@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "webpack -d --watch",
     "devbuild": "webpack",
-    "build": "webpack --config ./webpack.production.config.js"
+    "build": "webpack --config ./webpack.production.config.js",
+    "server8000": "python -m SimpleHTTPServer 8000"
   },
   "author": "",
   "license": "ISC",
